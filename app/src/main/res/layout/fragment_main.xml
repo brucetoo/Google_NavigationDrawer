@@ -10,6 +10,9 @@
 
     <TextView
         android:id="@+id/section_label"
+        android:text="GG思密达"
+        android:textSize="50sp"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

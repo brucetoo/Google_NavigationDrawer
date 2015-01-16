@@ -30,17 +30,20 @@ import android.widget.Toast;
 public class NavigationDrawerFragment extends Fragment {
 
     /**
+     * 选择的item
      * Remember the position of the selected item.
      */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     /**
+     * 记录上次用户设置drawer的显示状态
      * Per the design guidelines, you should show the drawer on launch until the user manually
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     /**
+     * drawer中点击事件的回调
      * A pointer to the current callbacks instance (the Activity).
      */
     private NavigationDrawerCallbacks mCallbacks;
@@ -74,7 +77,7 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
-
+        //设置drawer中选择item的位置，如果没有上次的点击保存，讲默认第一个item为选中
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
     }
@@ -83,7 +86,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);  //设置up button是否能点击
     }
 
     @Override
@@ -121,19 +124,24 @@ public class NavigationDrawerFragment extends Fragment {
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+        //设置NavigationDrawer
         mFragmentContainerView = getActivity().findViewById(fragmentId);
+        //设置DrawerLayout
         mDrawerLayout = drawerLayout;
 
+        //设置drawer滑动出来后的阴影
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
+        //设置actionBar的参数
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true); //显示up button 按钮， setHasOptionsMenu(true);是表示是否能点击
         actionBar.setHomeButtonEnabled(true);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
+        //ActionBarDrawerToggle绑定DrawerLayout和主Activity
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
@@ -157,6 +165,7 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
+                //保存用户上次点击的状态
                 if (!mUserLearnedDrawer) {
                     // The user manually opened the drawer; store this flag to prevent auto-showing
                     // the navigation drawer automatically in the future.
@@ -177,7 +186,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout.post(new Runnable() {
+        mDrawerLayout.post(new Runnable() { //post到UI线程，更新
             @Override
             public void run() {
                 mDrawerToggle.syncState();
@@ -187,6 +196,10 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    /**
+     * drawer中item的选中
+     * @param position
+     */
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
@@ -203,6 +216,9 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        /**
+         * 当attach到activity的时候就注册点击的回调事件
+         */
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
         } catch (ClassCastException e) {
@@ -219,6 +235,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        //记录上次点击的Item位置
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
